@@ -1,3 +1,6 @@
 .env
 webhook_events.jsonl
 __pycache__/
+out/
+renders/
+node_modules/
