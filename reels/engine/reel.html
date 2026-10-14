@@ -1,0 +1,215 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!--
+  Data-driven 9:16 reel template. render.py injects window.SPEC (scenes + timing)
+  and calls render(t) once per frame. Everything is computed from t, so frames are
+  deterministic: no CSS animations or timers.
+-->
+<style>
+  @font-face{font-family:Cairo;font-weight:700;src:url(fonts/cairo-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+  @font-face{font-family:Cairo;font-weight:900;src:url(fonts/cairo-arabic-900-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+  @font-face{font-family:Cairo;font-weight:700;src:url(fonts/cairo-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF}
+  @font-face{font-family:Cairo;font-weight:900;src:url(fonts/cairo-latin-900-normal.woff2) format("woff2");unicode-range:U+0000-00FF}
+  :root{--bg:#0d0c10;--accent:#d97757;--accent2:#ff9a6b;--ink:#f5efe6;--muted:#a8a29b;--violet:#5b3cc4}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Inter Display","Inter",Cairo,sans-serif}
+  body.ar{font-family:Cairo,"Inter Display",sans-serif}
+  #stage{position:absolute;inset:0;overflow:hidden}
+  .abs{position:absolute}
+  .blob{position:absolute;border-radius:50%;filter:blur(120px);opacity:.55}
+  #grid{position:absolute;inset:-200px;background-image:linear-gradient(rgba(245,239,230,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,239,230,.05) 1px,transparent 1px);background-size:90px 90px}
+  #grain{position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay}
+  .scene{position:absolute;inset:0;display:none}
+  .big{font-weight:900;letter-spacing:-3px;line-height:.95;text-transform:uppercase}
+  body.ar .big{letter-spacing:0;line-height:1.25;text-transform:none}
+  .acc{color:var(--accent)}
+  .fit{white-space:nowrap}
+  .center{left:60px;right:60px;text-align:center}
+  .chip{display:inline-flex;align-items:center;gap:16px;padding:22px 34px;border-radius:999px;background:rgba(245,239,230,.08);border:2px solid rgba(245,239,230,.18);font-size:46px;font-weight:700;margin:8px}
+  .card{position:absolute;left:90px;right:90px;min-height:230px;border-radius:40px;background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:2px solid rgba(245,239,230,.15);display:flex;align-items:center;gap:40px;padding:30px 50px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .num{width:140px;height:140px;border-radius:36px;background:var(--accent);color:#1a0f0a;font-size:92px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none}
+  .cardtxt{font-size:54px;font-weight:800;line-height:1.1}
+  .cardtxt small{display:block;font-size:34px;font-weight:600;color:var(--muted);margin-top:10px}
+  .row{position:absolute;left:100px;right:60px;display:flex;align-items:center;gap:34px;font-size:60px;font-weight:850;line-height:1.1}
+  .tick{width:100px;height:100px;border-radius:50%;border:5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+  .tick svg{width:60px;height:60px}
+  /* lip-sync clip: framed 4:5 card instead of the cut-out photo */
+  .pres.vid{left:165px!important;top:330px!important;width:750px!important;height:937px;object-fit:cover;object-position:50% 20%;border-radius:56px;border:6px solid var(--accent);-webkit-mask-image:none!important;box-shadow:0 40px 120px rgba(0,0,0,.55)}
+  .pres.vid.pc{left:240px!important;top:270px!important;width:600px!important;height:750px}
+  .strike{position:relative;display:inline-block}
+  .strike b{position:absolute;left:-10px;top:50%;height:14px;width:0;background:var(--accent);border-radius:7px}
+  .badge{display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;background:var(--accent);color:#1a0f0a;font-weight:900;font-size:40px;letter-spacing:1px;text-transform:uppercase}
+  .btn{display:inline-flex;align-items:center;gap:24px;padding:38px 70px;border-radius:999px;background:var(--accent);color:#1a0f0a;font-size:76px;font-weight:900}
+  .wave{position:absolute;left:140px;right:140px;height:200px;display:flex;align-items:center;justify-content:space-between}
+  .wave i{display:block;width:16px;border-radius:8px;background:linear-gradient(var(--accent2),var(--accent))}
+  .tool{position:absolute;left:110px;right:110px;top:560px;padding:70px 60px;border-radius:56px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border:2px solid rgba(245,239,230,.2);text-align:center;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+  #captions{position:absolute;left:60px;right:60px;top:1590px;text-align:center;font-size:62px;font-weight:900;line-height:1.15;text-transform:uppercase;word-spacing:22px;text-shadow:0 6px 24px rgba(0,0,0,.85)}
+  body.ar #captions{text-transform:none;word-spacing:14px;font-size:64px}
+  #captions span{display:inline-block}
+  #progress{position:absolute;left:0;top:0;height:12px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  #wm{right:44px;top:44px;font-size:30px;font-weight:800;letter-spacing:2px;color:rgba(245,239,230,.55)}
+  body.ar #wm{right:auto;left:44px}
+</style></head>
+<body><div id="stage">
+  <div class="abs" style="inset:0">
+    <div id="b1" class="blob" style="width:900px;height:900px;background:var(--accent)"></div>
+    <div id="b2" class="blob" style="width:800px;height:800px;background:var(--violet)"></div>
+    <div id="b3" class="blob" style="width:700px;height:700px;background:#c4482f"></div>
+    <div id="grid"></div>
+  </div>
+  <canvas id="grain" width="540" height="960"></canvas>
+  <div id="scenes"></div>
+  <div id="captions"></div>
+  <div id="progress"></div>
+  <div id="wm" class="abs"></div>
+</div>
+<script>
+const S = window.SPEC;
+const $ = (q, el=document) => el.querySelector(q);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const p=(t,s,d)=>clamp((t-s)/d);
+const eo=x=>1-Math.pow(1-x,3);
+const eb=x=>{const c1=1.9,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// *word* in spec text = accent colour
+const rich=s=>esc(s).replace(/\*([^*]+)\*/g,'<span class="acc">$1</span>');
+const RTL = S.lang==='ar';
+if(RTL){document.body.classList.add('ar');document.body.dir='rtl'}
+document.documentElement.style.setProperty('--accent',S.accent||'#d97757');
+$('#wm').textContent=S.watermark||'';
+const TICK='<svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" style="color:var(--accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M4 12.5l5 5L20 6.5"/></svg>';
+
+function pop(el,lt,s,d=.45,dy=60){const k=p(lt,s,d);el.style.opacity=clamp(k*2.5);el.style.transform=`translateY(${(1-eo(k))*dy}px) scale(${.85+.15*eb(k)})`}
+function presenterImg(style,cls=''){return S.presenter?`<img class="abs pres ${cls}" src="${S.presenter}" style="${style};-webkit-mask-image:linear-gradient(#000 62%,transparent 92%)">`:''}
+function setPresenter(el,sc,lt,t){ // swap in lip-sync frames when a talking-head clip exists
+  const img=$('.pres',el),f=sc.frames||S.presenterFrames; if(!img||!f) return;
+  const n=Math.min(f.count,Math.max(1,Math.floor((sc.frames?lt:t)*f.fps)+1));
+  if(!img.classList.contains('vid')){img.classList.add('vid')}
+  img.src=f.pattern.replace('%05d',String(n).padStart(5,'0'));
+}
+
+// ---- scene types: build(sc) -> html, anim(el, sc, lt, dur, t) ----
+const T = {
+  hook:{build:sc=>`
+      <div class="abs center" style="top:${sc.top||520}px">
+        <div class="big h1" style="font-size:${sc.size||170}px">${(sc.big||[]).map((l,i)=>`<div class="fit ${i===(sc.accentLine??1)?'acc':''}">${rich(l)}</div>`).join('')}</div>
+        <div class="h2" style="margin-top:70px;font-size:64px;font-weight:800;line-height:1.2">${rich(sc.sub)}${sc.strike?` <span class="strike">${esc(sc.strike)}<b></b></span>`:''}</div></div>
+      <div class="abs flash" style="inset:0;background:#fff;opacity:0"></div>`,
+    anim(el,sc,lt,d){const k=p(lt,0,.35),h=$('.h1',el);h.style.transform=`scale(${1.6-.6*eb(k)}) rotate(${(1-eo(k))*-6}deg)`;h.style.opacity=clamp(k*3);
+      $('.flash',el).style.opacity=.6*(1-p(lt,.05,.25));pop($('.h2',el),lt,d*.3,.5,80);
+      const b=$('.strike b',el);if(b)b.style.width=eo(p(lt,d*.75,.35))*105+'%';return (1-p(lt,0,.4))*14}},
+
+  presenter:{build:sc=>`
+      <div class="abs ring" style="left:140px;top:430px;width:800px;height:800px;border-radius:50%;border:6px solid var(--accent);box-shadow:0 0 120px rgba(217,119,87,.5),inset 0 0 120px rgba(217,119,87,.25)"></div>
+      ${presenterImg('left:30px;top:520px;width:1020px')}
+      <div class="abs center big ttl" style="top:150px;font-size:${sc.size||140}px">${rich(sc.title)}</div>
+      <div class="abs center chips" style="top:1290px">${(sc.chips||[]).map(c=>`<div class="chip">${esc(c)}</div>`).join('')}</div>`,
+    anim(el,sc,lt,d,t){setPresenter(el,sc,lt,t);const k=p(lt,0,.7),im=$('.pres',el);if(im)im.style.transform=`translateY(${(1-eo(k))*500}px) scale(${1+lt*.012})`;
+      const r=$('.ring',el),kr=p(lt,.15,.7);r.style.transform=`scale(${.4+.6*eb(kr)}) rotate(${t*10}deg)`;r.style.opacity=kr;
+      pop($('.ttl',el),lt,.1,.5,-80);[...el.querySelectorAll('.chip')].forEach((c,i)=>pop(c,lt,d*.25+i*.3,.4))}},
+
+  tool:{build:sc=>`
+      <div class="abs center big kick" style="top:230px;font-size:96px">${rich(sc.kicker||'')}</div>
+      <div class="tool"><div class="badge tg">${esc(sc.tag||'AI TOOL')}</div>
+        <div class="big nm fit" style="font-size:${sc.size||150}px;margin:40px 0 30px">${rich(sc.name)}</div>
+        <div class="ln" style="font-size:54px;font-weight:700;line-height:1.25;color:var(--ink)">${rich(sc.line)}</div>
+        ${sc.url?`<div class="url" style="margin-top:40px;font-size:40px;font-weight:700;color:var(--muted)">${esc(sc.url)}</div>`:''}</div>`,
+    anim(el,sc,lt,d){pop($('.kick',el),lt,0,.4,-60);const c=$('.tool',el),k=p(lt,.15,.6);c.style.opacity=clamp(k*2);c.style.transform=`perspective(1400px) rotateX(${(1-eo(k))*35}deg) scale(${.8+.2*eb(k)})`;
+      pop($('.tg',el),lt,.5,.4);pop($('.nm',el),lt,.6,.5);pop($('.ln',el),lt,d*.35,.5);const u=$('.url',el);if(u)pop(u,lt,d*.55,.4)}},
+
+  list:{build:sc=>`
+      <div class="abs big ttl" style="left:110px;right:60px;top:240px;font-size:${sc.size||110}px">${rich(sc.title)}</div>
+      ${(sc.items||[]).map((it,i)=>`<div class="row">${'<div class="tick">'+TICK+'</div>'}<span>${rich(it)}</span></div>`).join('')}`,
+    anim(el,sc,lt,d){pop($('.ttl',el),lt,0,.5);const rows=[...el.querySelectorAll('.row')],n=rows.length,seg=(d-.5)/Math.max(n,1),top=sc.itemsTop||640,gap=Math.min(170,800/Math.max(n,1));
+      rows.forEach((r,i)=>{r.style.top=(top+i*gap)+'px';const k=p(lt,.4+seg*i,.4);r.style.opacity=clamp(k*3);r.style.transform=`translateX(${(1-eo(k))*(RTL?220:-220)}px)`;$('.tick',r).style.background=k>=1?'rgba(217,119,87,.18)':'transparent'})}},
+
+  steps:{build:sc=>`
+      <div class="abs big ttl" style="left:90px;right:60px;top:170px;font-size:${sc.size||104}px">${rich(sc.title)}</div>
+      ${(sc.items||[]).map((it,i)=>`<div class="card"><div class="num">${i+1}</div><div class="cardtxt">${rich(it.t??it)}${it.s?`<small>${esc(it.s)}</small>`:''}</div></div>`).join('')}`,
+    anim(el,sc,lt,d){pop($('.ttl',el),lt,0,.5);const cs=[...el.querySelectorAll('.card')],n=cs.length,seg=(d-.6)/Math.max(n,1),gap=Math.min(290,1000/Math.max(n,1));
+      cs.forEach((c,i)=>{c.style.top=(500+i*gap)+'px';const s=.5+seg*i,k=p(lt,s,.5);c.style.opacity=clamp(k*2.5);c.style.transform=`translateX(${(1-eo(k))*(RTL?-700:700)}px) rotate(${(1-eo(k))*4}deg)`;
+        const on=lt>=s&&(i==n-1||lt<.5+seg*(i+1));c.style.borderColor=on?'var(--accent)':'rgba(245,239,230,.15)';c.style.boxShadow=on?'0 0 60px rgba(217,119,87,.35)':'0 30px 80px rgba(0,0,0,.45)'})}},
+
+  strikes:{build:sc=>`
+      <div class="abs center big" style="top:${sc.top||420}px;font-size:${sc.size||130}px;line-height:1.1">
+        ${(sc.items||[]).map(it=>`<div class="si"><span class="strike">${esc(it)}<b></b></span></div>`).join('')}
+        <div class="punch acc" style="margin-top:40px;font-size:${(sc.size||130)*1.2}px">${rich(sc.punch)}</div></div>`,
+    anim(el,sc,lt,d){const it=[...el.querySelectorAll('.si')],seg=d/(it.length+1.3);let sh=0;
+      it.forEach((x,i)=>{const s=seg*i;pop(x,lt,s,.3,40);$('b',x).style.width=eo(p(lt,s+.3,.3))*108+'%';x.style.color=lt>s+.5?'rgba(245,239,230,.45)':''});
+      const k=p(lt,seg*it.length,.5),pu=$('.punch',el);pu.style.opacity=clamp(k*3);pu.style.transform=`scale(${.3+.7*eb(k)})`;if(k>0&&k<.4)sh=10;return sh}},
+
+  stat:{build:sc=>`
+      <div class="abs center big n fit" style="top:520px;font-size:${sc.size||360}px;color:var(--accent)">${esc(sc.number)}</div>
+      <div class="abs center l" style="top:${560+(sc.size||360)}px;font-size:66px;font-weight:800;line-height:1.2">${rich(sc.label)}</div>
+      ${sc.source?`<div class="abs center s" style="top:1420px;font-size:34px;color:var(--muted)">${esc(sc.source)}</div>`:''}`,
+    anim(el,sc,lt,d){const n=$('.n',el),k=p(lt,0,.6);n.style.opacity=clamp(k*3);n.style.transform=`scale(${2-eb(k)})`;
+      const m=String(sc.number).match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);if(m){const v=parseFloat(m[2])*eo(p(lt,0,1.1));n.textContent=m[1]+(m[2].includes('.')?v.toFixed(1):Math.round(v))+m[3]}
+      pop($('.l',el),lt,.6,.5);const s=$('.s',el);if(s)pop(s,lt,1,.4);return (1-p(lt,0,.3))*8}},
+
+  quote:{build:sc=>`
+      <div class="abs center" style="top:300px;font-size:260px;font-weight:900;color:var(--accent);line-height:1">“</div>
+      <div class="abs center q" style="top:560px;font-size:${sc.size||88}px;font-weight:900;line-height:1.2">${String(sc.text||'').split(/\s+/).map(w=>`<span class="w" style="display:inline-block;margin:0 12px">${rich(w)}</span>`).join('')}</div>
+      ${sc.author?`<div class="abs center a" style="top:1330px;font-size:46px;font-weight:700;color:var(--muted)">— ${esc(sc.author)}</div>`:''}`,
+    anim(el,sc,lt,d){const ws=[...el.querySelectorAll('.w')],seg=(d*.75)/Math.max(ws.length,1);ws.forEach((w,i)=>pop(w,lt,seg*i,.35,30));const a=$('.a',el);if(a)pop(a,lt,d*.8,.4)}},
+
+  voice:{build:sc=>`
+      <div class="abs center big ttl" style="top:330px;font-size:${sc.size||130}px">${(sc.big||[]).map((l,i)=>`<div class="${i==1?'acc':''}">${rich(l)}</div>`).join('')}</div>
+      <div class="wave" style="top:820px">${'<i></i>'.repeat(34)}</div>
+      <div class="abs center sub" style="top:1150px;font-size:56px;font-weight:700;color:var(--muted)">${rich(sc.sub)}</div>`,
+    anim(el,sc,lt,d,t){pop($('.ttl',el),lt,0,.5);pop($('.sub',el),lt,.6,.5);[...el.querySelectorAll('.wave i')].forEach((b,i)=>{b.style.height=30+Math.abs(Math.sin(t*9+i*.7)*Math.cos(t*3.3+i*.31))*170*p(lt,.2,.5)+'px'})}},
+
+  cta:{build:sc=>`
+      <div class="abs glow" style="left:190px;top:330px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(217,119,87,.45),rgba(217,119,87,0) 70%)"></div>
+      ${presenterImg('left:150px;top:330px;width:780px','pc')}
+      <div class="abs center big top" style="top:150px;font-size:100px">${rich(sc.top)}</div>
+      <div class="abs center bw" style="top:1110px"><div class="btn">${esc(sc.button)}</div></div>
+      <div class="abs center sub" style="top:1300px;font-size:56px;font-weight:800">${rich(sc.sub)}</div>
+      <div class="abs center sv" style="top:1410px;font-size:46px;font-weight:700;color:var(--muted)">${rich(sc.save)}</div>`,
+    anim(el,sc,lt,d,t){setPresenter(el,sc,lt,t);const k=p(lt,0,.7),im=$('.pres',el);if(im){im.style.transform=`translateY(${(1-eo(k))*400}px) scale(${1+lt*.01})`;im.style.opacity=clamp(k*2)}
+      $('.glow',el).style.transform=`scale(${.9+Math.sin(t*3)*.06})`;pop($('.top',el),lt,.1,.45,-60);
+      const kb=p(lt,.5,.5),bw=$('.bw',el);bw.style.opacity=clamp(kb*3);bw.style.transform=`scale(${(.3+.7*eb(kb))*(1+Math.max(0,Math.sin(lt*5))*.05)})`;
+      const pr=(lt*1.2)%1;$('.btn',el).style.boxShadow=`0 0 0 ${pr*60}px rgba(217,119,87,${.55*(1-pr)})`;pop($('.sub',el),lt,.9,.45);pop($('.sv',el),lt,d*.6,.45)}},
+};
+
+// build scenes
+const host=$('#scenes');
+S.scenes.forEach((sc,i)=>{const el=document.createElement('div');el.className='scene';el.innerHTML=(T[sc.type]||T.hook).build(sc);host.appendChild(el);sc._el=el});
+
+// grain
+const g=$('#grain').getContext('2d'),grains=[];
+for(let k=0;k<4;k++){const im=g.createImageData(540,960);let s=12345+k*999;for(let i=0;i<im.data.length;i+=4){s=(s*16807)%2147483647;const v=s%255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=255}grains.push(im)}
+
+function caption(t){
+  for(const sc of S.scenes){ if(t<sc.start||t>=sc.end||!sc.say) continue;
+    const words=sc.say.split(/\s+/).filter(Boolean),wts=words.map(w=>w.length+2),tot=wts.reduce((a,b)=>a+b,0);
+    const speech=sc.speechEnd-sc.start;let acc=0,cur=words.length-1;
+    for(let i=0;i<words.length;i++){acc+=wts[i];if(t<sc.start+speech*acc/tot){cur=i;break}}
+    const c0=Math.floor(cur/3)*3;
+    return words.slice(c0,c0+3).map((w,j)=>`<span style="color:${c0+j==cur?'var(--accent)':'var(--ink)'};transform:scale(${c0+j==cur?1.12:1})">${esc(w)}</span>`).join(' ');
+  }
+  return '';
+}
+
+window.render=function(t){
+  $('#b1').style.transform=`translate(${-200+Math.sin(t*.35)*180}px,${-150+Math.cos(t*.27)*160}px)`;
+  $('#b2').style.transform=`translate(${520+Math.cos(t*.3)*200}px,${900+Math.sin(t*.22)*220}px)`;
+  $('#b3').style.transform=`translate(${300+Math.sin(t*.18+2)*260}px,${1500+Math.cos(t*.31)*140}px)`;
+  $('#grid').style.transform=`translate(${(t*18)%90}px,${(t*30)%90}px)`;
+  g.putImageData(grains[Math.floor(t*24)%4],0,0);
+  $('#progress').style.width=clamp(t/S.total)*1080+'px';
+  let shake=0;
+  S.scenes.forEach((sc,i)=>{
+    const last=i===S.scenes.length-1, end=last?S.total+1:sc.end+.05;
+    const a=Math.min(i===0?1:p(t,sc.start,.25), last?1:1-p(t,end-.25,.25));
+    sc._el.style.display=a>0?'block':'none';sc._el.style.opacity=a;
+    if(a>0){const sh=(T[sc.type]||T.hook).anim(sc._el,sc,t-sc.start,sc.end-sc.start,t);if(sh)shake=Math.max(shake,sh)}
+  });
+  $('#stage').style.transform=shake?`translate(${Math.sin(t*90)*shake}px,${Math.cos(t*77)*shake}px)`:'';
+  $('#captions').innerHTML=S.captions===false?'':caption(t);
+};
+// shrink single-line headings until they fit their box
+function fitAll(){document.querySelectorAll('.fit').forEach(el=>{const sc=el.closest('.scene');sc.style.display='block';
+  let fs=parseFloat(getComputedStyle(el).fontSize);const w=el.clientWidth||960;
+  while(el.scrollWidth>w+2&&fs>40){fs-=4;el.style.fontSize=fs+'px'}sc.style.display='none'})}
+document.fonts.ready.then(()=>{fitAll();window.READY=true;render(0)});
+</script></body></html>

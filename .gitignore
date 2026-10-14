@@ -1,3 +1,5 @@
 .env
 webhook_events.jsonl
 __pycache__/
+out/
+.venv/
