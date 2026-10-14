@@ -1,0 +1,48 @@
+{
+  "brand": {
+    "name": "SAM",
+    "handle": "@SAM",
+    "niche": "Gen AI tools: simple, exclusive tips & tricks",
+    "accent": "#d97757",
+    "watermark_en": "✳ @SAM · GEN AI TIPS",
+    "watermark_ar": "✳ SAM · نصايح AI"
+  },
+  "languages": [
+    "en",
+    "ar"
+  ],
+  "timezone": "Africa/Cairo",
+  "mode": "review",
+  "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook",
+    "linkedin",
+    "threads",
+    "twitter"
+  ],
+  "higgsfield": {
+    "voice_id": null,
+    "presenter_media_id": "f8ae4f88-55f8-4bb5-9019-d1bd4945c167",
+    "tts_model": "seed_audio",
+    "lipsync_model": "seedance_2_5",
+    "lipsync_scenes": [
+      "presenter",
+      "cta"
+    ],
+    "max_credits_per_day": 120
+  },
+  "media_host": {
+    "kind": "github-branch",
+    "repo": "samsafwat/SAMs-",
+    "branch": "reels-media"
+  },
+  "metricool": {
+    "blog_id": {
+      "en": "7226124",
+      "ar": "7226124"
+    },
+    "draft_in_review_mode": true
+  }
+}

@@ -1,6 +1,26 @@
 # SAMs-
 
-Claude Code skills for WhatsApp, using the WhatsApp Business Cloud API (Meta).
+Claude Code skills for **daily AI-tips reels** (research → script → cloned voice → motion
+graphics → multi-platform publishing) and for **WhatsApp** (WhatsApp Business Cloud API).
+
+## Daily reels
+
+Plan and setup checklist: [`docs/reel-automation-plan.md`](docs/reel-automation-plan.md).
+
+| Skill | What it does |
+|-------|--------------|
+| `daily-reel` | Runs the whole pipeline for today's reel, in English and Egyptian Arabic |
+| `reel-research` | Finds a fresh, verified AI tool tip for the day's content pillar |
+| `reel-script` | Writes both language specs plus captions, titles and hashtags |
+| `reel-voice` | Cloned-voice narration and lip-synced presenter clips (Higgsfield) |
+| `reel-render` | Renders the spec with `reels/engine` and runs visual QA |
+| `reel-publish` | Hosts the MP4s and schedules them on every network (Metricool) |
+| `reel-analytics` | Weekly review that rewrites the content mix in `reels/learnings.md` |
+
+Try the engine: `python3 reels/engine/render.py reels/specs/sample-en.json out/sample`
+(see [`reels/engine/README.md`](reels/engine/README.md)).
+
+## WhatsApp
 
 | Skill | What it does |
 |-------|--------------|

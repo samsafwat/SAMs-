@@ -1,0 +1,4 @@
+# Your face/voice files stay out of git by default (public repo).
+*
+!.gitignore
+!README.md

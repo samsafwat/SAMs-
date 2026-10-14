@@ -1,0 +1,15 @@
+{
+  "id": "sample-en",
+  "lang": "en",
+  "watermark": "✳ @SAM · GEN AI TIPS",
+  "presenter": "../brand/presenter.png",
+  "topic": "NotebookLM Audio Overviews",
+  "scenes": [
+    {"type": "hook", "big": ["Stop reading", "PDFs"], "sub": "Turn them into a podcast, not a", "strike": "boring summary", "say": "Stop reading long PDFs. There's a free tool that turns them into a podcast."},
+    {"type": "tool", "kicker": "Free tool", "tag": "Google · Free", "name": "NotebookLM", "line": "Upload any PDF, link or notes → get a *two-host podcast* about it", "url": "notebooklm.google.com", "say": "It's called NotebookLM, by Google. Upload a PDF, a link or your notes, and it creates a two-host podcast about them."},
+    {"type": "steps", "title": "How to do it in *60 seconds*", "items": [{"t": "Create a notebook", "s": "notebooklm.google.com"}, {"t": "Add your sources", "s": "PDF, website, YouTube, Docs"}, {"t": "Tap Audio Overview", "s": "Generate → listen anywhere"}], "say": "Create a notebook. Add your sources. Then tap Audio Overview and press generate."},
+    {"type": "list", "title": "Pro *tricks*:", "items": ["Customize: tell the hosts what to focus on", "Join the chat and ask them questions live", "Works for reports, books and courses"], "say": "Pro tricks: customize what the hosts focus on, and join the conversation to ask them questions."},
+    {"type": "quote", "text": "Learn on your *commute*, not your *desk*.", "say": "Learn on your commute, not your desk."},
+    {"type": "cta", "top": "Want one AI trick *a day*?", "button": "＋ Follow SAM", "sub": "Daily *Gen AI* tips & tricks", "save": "🔖 Save this for your next PDF", "say": "Follow Sam for one AI trick every day. Save this for your next PDF."}
+  ]
+}
