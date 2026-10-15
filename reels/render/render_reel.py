@@ -202,7 +202,7 @@ def build_layers(entry, avatar_path):
             kw = chip(sc["en"][:42].upper(), font("Orbitron-700.ttf", 40), C["neon_cyan"], C["neon_violet"])
             layers["scenes"].append((kw, body, None))
     q = entry["outro_quote"]
-    layers["quote"] = text_block(f"“{q}”", font("Cairo-900.ttf", 92), 940, C["text"] + (255,), line_gap=1.2, glow=C["neon_cyan"])
+    layers["quote"] = text_block(f"“{q}”", font("Cairo-900.ttf", 76), 1000, C["text"] + (255,), line_gap=1.1, glow=C["neon_cyan"])
     layers["sig"] = text_block(entry["signature"], font("Orbitron-900.ttf", 84), 900, C["neon_cyan"] + (255,), glow=C["neon_violet"])
     layers["cta"] = text_block(entry["cta"], font("Cairo-700.ttf", 46), 940, C["muted"] + (255,))
     return layers

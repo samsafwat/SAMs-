@@ -1,9 +1,9 @@
 {
   "creator": "Sam",
   "signature": "— Sam",
-  "quote_en": "Nothing can be done",
+  "quote_en": "Nothing Can't Be Done!",
   "quote_ar": "",
-  "quote_note": "Closing quote exactly as given by Sam. Edit quote_en / quote_ar here and every future reel picks it up.",
+  "quote_note": "Sam's closing quote, confirmed by Sam. Edit quote_en / quote_ar here and every future reel picks it up.",
   "positioning_ar": "سام — قائد يتعلّم ويعلّم الـ AI Transformation والـ Digital Transformation",
   "positioning_en": "Sam — AI & Digital Transformation leader who learns in public and teaches",
   "language_mix": "Arabic-first narration and on-screen text; English for tool names and key AI keywords, alternating in every scene.",
@@ -32,8 +32,19 @@
     "higgsfield_photo_media_id": "09dbeec6-dbb1-4aeb-89d4-dc8ca13bff56",
     "photo_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_36Vpd3QlajXsGvAz6hHKlKyk9WJ/09dbeec6-dbb1-4aeb-89d4-dc8ca13bff56.png"
   },
-  "platforms": ["instagram", "facebook", "linkedin", "threads"],
+  "platforms": [
+    "instagram",
+    "facebook",
+    "linkedin",
+    "threads"
+  ],
   "publish_time_local": "19:00",
   "timezone": "Africa/Cairo",
-  "base_hashtags": ["#AI", "#الذكاء_الاصطناعي", "#DigitalTransformation", "#التحول_الرقمي", "#SamAI"]
+  "base_hashtags": [
+    "#AI",
+    "#الذكاء_الاصطناعي",
+    "#DigitalTransformation",
+    "#التحول_الرقمي",
+    "#SamAI"
+  ]
 }
