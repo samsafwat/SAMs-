@@ -1,3 +1,7 @@
 .env
 webhook_events.jsonl
 __pycache__/
+
+# Reel pipeline scratch + renders (renders are hosted on the reels-output branch)
+reels/work/
+reels/output/

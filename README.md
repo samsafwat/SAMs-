@@ -1,5 +1,7 @@
 # SAMs-
 
+> **Daily AI reels:** a 365-day bilingual reel series with automatic publishing. See [`reels/README.md`](reels/README.md) and the `daily-reel` skill.
+
 Claude Code skills for WhatsApp, using the WhatsApp Business Cloud API (Meta).
 
 | Skill | What it does |

@@ -1,0 +1,39 @@
+{
+  "creator": "Sam",
+  "signature": "— Sam",
+  "quote_en": "Nothing can be done",
+  "quote_ar": "",
+  "quote_note": "Closing quote exactly as given by Sam. Edit quote_en / quote_ar here and every future reel picks it up.",
+  "positioning_ar": "سام — قائد يتعلّم ويعلّم الـ AI Transformation والـ Digital Transformation",
+  "positioning_en": "Sam — AI & Digital Transformation leader who learns in public and teaches",
+  "language_mix": "Arabic-first narration and on-screen text; English for tool names and key AI keywords, alternating in every scene.",
+  "start_date": "2026-10-16",
+  "days": 365,
+  "reel": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "hook_seconds": 3,
+    "target_seconds": 30
+  },
+  "colors": {
+    "bg_top": "#05060f",
+    "bg_bottom": "#0b1030",
+    "neon_cyan": "#22e6ff",
+    "neon_violet": "#8b5cff",
+    "neon_magenta": "#ff3dbb",
+    "text": "#f4f7ff",
+    "muted": "#9aa6d6"
+  },
+  "avatar": {
+    "local_photo": "reels/assets/sam.jpg",
+    "higgsfield_element_id": "d0c324cc-2e57-43b3-9a68-4301f9799885",
+    "higgsfield_element_name": "Sam-SAMs-AI",
+    "higgsfield_photo_media_id": "09dbeec6-dbb1-4aeb-89d4-dc8ca13bff56",
+    "photo_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_36Vpd3QlajXsGvAz6hHKlKyk9WJ/09dbeec6-dbb1-4aeb-89d4-dc8ca13bff56.png"
+  },
+  "platforms": ["instagram", "facebook", "linkedin", "threads"],
+  "publish_time_local": "19:00",
+  "timezone": "Africa/Cairo",
+  "base_hashtags": ["#AI", "#الذكاء_الاصطناعي", "#DigitalTransformation", "#التحول_الرقمي", "#SamAI"]
+}
