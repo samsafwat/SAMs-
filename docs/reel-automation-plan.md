@@ -39,7 +39,8 @@ Sunday 10:00   Second routine runs `reel-analytics` → reels/learnings.md (feed
 
 | Connector | Used for | Status today |
 |-----------|----------|--------------|
-| Higgsfield | voice clone, narration, lip-sync | connected; **0 credits** |
+| ElevenLabs | narration in Sam's cloned voice (EN + Egyptian Arabic) | connected; clone "SAM Voice" not created yet |
+| Higgsfield | lip-sync (and fallback narration) | connected; **0 credits** |
 | Metricool | scheduling to all networks, best times, analytics | connected; **no social network linked** |
 | GitHub | code, specs, history; `reels-media` branch hosts the public MP4s | connected |
 | WhatsApp (repo skills) | optional: send Sam the daily preview | needs `.env` from Meta |

@@ -44,5 +44,11 @@
       "ar": "7226124"
     },
     "draft_in_review_mode": true
+  },
+  "voice": {
+    "provider": "elevenlabs",
+    "elevenlabs_voice_id": null,
+    "elevenlabs_model": "eleven_v3",
+    "voice_name": "SAM Voice"
   }
 }
