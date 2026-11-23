@@ -24,7 +24,7 @@ VOICE
 
 MUSIC AND SOUND
   Original score, written in code (mix.py); sampled instruments:
-INSTRUMENTS_PLACEHOLDER
+  Samples (CC0): VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
   Foley and ambience synthesised (Lemo-Opuscar core/audio/sfx.py).
 
 FONTS

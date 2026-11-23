@@ -10,4 +10,4 @@ cd "$LIB"
 node core/render/events.mjs "$HERE"
 node core/render/video.mjs "$HERE" --fps 24 --workers 3 --out "$HERE/out/video.mp4"
 "$LIB/.venv/bin/python" "$HERE/mix.py"
-sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$HERE/shenzhen-summit.mp4" 24
+sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$HERE/shenzhen-summit.mp4" 24 || sh "$HERE/master.sh" "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$HERE/shenzhen-summit.mp4"
