@@ -1,0 +1,32 @@
+THE SHENZHEN SUMMIT — credits and licences
+
+REPORTING (facts and quotes; see FACTS.md)
+  Al Jazeera, "'Groundbreaking' Trump-Xi-Putin summit: Five key takeaways", 19 Nov 2026
+  Al Jazeera, "Trump, Xi and Putin to hold first three-way summit in China", 14 Nov 2026
+  Reuters via Investing.com, "Trump, Xi and Putin release 'peace declaration' from unprecedented summit"
+  Fox News, "Trump's historic summit with Xi, Putin marks diplomatic milestone, but breakthroughs remain elusive"
+  Names are set in type; no outlet logos are used. None of these outlets made or endorsed this film.
+
+PHOTOGRAPHS (real file photos, not from the summit itself)
+  Official Presidential Portrait of President Donald J. Trump (2025) — The White House. Public domain (U.S. federal government work).
+    https://commons.wikimedia.org/wiki/File:Official_Presidential_Portrait_of_President_Donald_J._Trump_(2025).jpg
+  Putin and Xi Jinping (2024-05-16) — Kremlin.ru (Presidential Press and Information Office). CC BY 4.0.
+    https://commons.wikimedia.org/wiki/File:Putin_and_Xi_Jinping_(2024-05-16).jpg
+    Cropped into separate portraits of Xi Jinping and Vladimir Putin.
+
+AI-GENERATED IMAGES (illustrations; tagged ILLUSTRATION on screen whenever visible)
+  Six photoreal plates generated with Magnific (text-to-image, auto mode, free plan), 23 Nov 2026:
+  woman on a neon street, man in a café, student in a library, dock worker at a port, grandmother and grandson on a sofa, an empty meeting room.
+  Every person in them is fictional. None depicts the leaders, the venue or the event. Prompts: assets/plates/PROMPTS.md
+
+VOICE
+  Kokoro TTS (kokoro-onnx, voice bm_george) — Apache 2.0.
+
+MUSIC AND SOUND
+  Original score, written in code (mix.py); sampled instruments:
+  Samples (CC0): VS Chamber Orchestra: Community Edition (Versilian Studios), Versilian Community Sample Library (Versilian Studios)
+  Foley and ambience synthesised (Lemo-Opuscar core/audio/sfx.py).
+
+FONTS
+  Barlow Condensed (Jeremy Tribby) — SIL Open Font License 1.1
+  IBM Plex Mono (IBM) — SIL Open Font License 1.1
